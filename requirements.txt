@@ -1,0 +1,6 @@
+asyncpg==0.30.0
+aiogram==3.17.0
+APScheduler==3.11.0
+python-decouple==3.8
+regex==2024.11.6
+logging==0.4.9.6
