@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 bot = Bot(token=config('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher(storage=MemoryStorage())
 
+admins = [int(admin_id) for admin_id in config('ADMINS').split(',')]
+
 destinations = {
     1: {"dest" : "Склад Санкт-Петербург - Склад Калининград"},
     2: {"dest" : "Склад Калининград - Склад Санкт-Петербург"}
