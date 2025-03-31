@@ -1,5 +1,6 @@
 import asyncio
 import pandas as pd
+from openpyxl.styles.builtins import calculation
 
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -35,6 +36,7 @@ async def pick_option(message: Message, state: FSMContext):
     await state.clear()
     role = role_check.check(message.from_user.id)
     await message.answer("Выберите действие:", reply_markup=for_options.get_keyboard(role))
+
 
 @notify_router.callback_query(F.data == "opt_1")
 async def pick_number(callback: types.CallbackQuery, state: FSMContext):

@@ -56,8 +56,6 @@ services:
         limits:
           cpus: '1'
           memory: 300M
-    networks:
-      - postgres
   bot:
     build:
       context: .
@@ -70,7 +68,3 @@ services:
 
 volumes:
   lokamativ-bot-data:
-
-networks:
-  postgres:
-    driver: bridge

@@ -16,7 +16,7 @@ async def main():
     scheduler.add_job(send_notifications.notify_daily, "cron", hour=12)
     scheduler.add_job(send_notifications.notify_classification, "cron", day=24, hour=18)
     scheduler.start()
-    dp.include_routers(start.start_router, calculations.capture_router, notifications.notify_router)
+    dp.include_routers(start.start_router, notifications.notify_router, calculations.capture_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
