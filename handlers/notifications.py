@@ -8,6 +8,7 @@ from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import Message, InlineKeyboardButton
 from aiogram import types
+from selenium.webdriver.common.devtools.v132.console import clear_messages
 
 from create_bot import managers_id
 from db_handlers import db_func
@@ -30,12 +31,14 @@ global prefix
 prefix = "07"
 
 @notify_router.message(F.text == "Администрирование")
-async def pick_option(message: Message):
+async def pick_option(message: Message, state: FSMContext):
+    await state.clear()
     role = role_check.check(message.from_user.id)
     await message.answer("Выберите действие:", reply_markup=for_options.get_keyboard(role))
 
 @notify_router.callback_query(F.data == "opt_1")
 async def pick_number(callback: types.CallbackQuery, state: FSMContext):
+    await state.clear()
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.answer()
 
@@ -44,6 +47,7 @@ async def pick_number(callback: types.CallbackQuery, state: FSMContext):
 
 @notify_router.callback_query(F.data == "opt_3")
 async def return_to_menu(callback: types.CallbackQuery, state: FSMContext):
+    await state.clear()
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.answer()
     role = role_check.check(callback.from_user.id)
@@ -89,6 +93,7 @@ async def save_order(message: Message, state: FSMContext, bot: Bot):
     result = await db_func.insert_order(order_data)
     if result:
         await message.answer(f"Заявка с номером {prefix}-{order_data["order_id"]} успешно сохранена! Выберите следующее действие:", reply_markup=for_options.get_keyboard(role))
+        await state.clear()
         for id in managers_id:
             messg = await bot.send_message(chat_id=id, text=f"{prefix}-{order_data["order_id"]} занята.")
             await bot.unpin_chat_message(chat_id=messg.chat.id)
@@ -96,10 +101,11 @@ async def save_order(message: Message, state: FSMContext, bot: Bot):
 
     else:
         await message.answer(f"Заявка с номером {prefix}-{order_data["order_id"]} занята. Выберите другую.")
-    await state.clear()
+        await state.clear()
 
 @notify_router.callback_query(F.data == "opt_2")
 async def pick_number_to_edit(callback: types.CallbackQuery, state: FSMContext):
+    await state.clear()
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.answer()
     await callback.message.answer(f"Укажите номер заявки, которую нужно изменить (например, 07-100):")
@@ -136,6 +142,7 @@ async def edit_date(message: Message, state: FSMContext):
         result = await db_func.update_date(update_data)
         if result:
             await message.answer(f"Изменения внесены!\nВыберите следующее действие", reply_markup=for_options.get_keyboard(role))
+            await state.clear()
         else:
             await message.answer(f"Формат данных неверен.")
 
@@ -155,17 +162,19 @@ async def edit_date(message: Message, state: FSMContext):
         result = await db_func.update_sum(update_data)
         if result:
             await message.answer(f"Изменения внесены!\nВыберите следующее действие", reply_markup=for_options.get_keyboard(role))
+            await state.clear()
         else:
             await message.answer(f"Формат данных неверен.")
 
 @notify_router.callback_query(F.data == "opt_4")
-async def pick_number_to_edit(callback: types.CallbackQuery):
+async def pick_number_to_edit(callback: types.CallbackQuery, state:FSMContext):
+    await state.clear()
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.answer()
     await callback.message.answer(f"Отправьте файл Excel.")
 
 @notify_router.message(F.document)
-async def handle_excel(message: Message, bot: Bot):
+async def handle_excel(message: Message):
     role = role_check.check(message.from_user.id)
     if role == "admin":
         if message.document.mime_type not in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

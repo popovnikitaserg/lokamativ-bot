@@ -123,10 +123,13 @@ async def start_calculation(message: Message, state: FSMContext, bot: Bot):
 
             price = price_calculator.calculate(quantity, dimensions, weights)
 
+
             new_msg = await bot.send_message(messg.chat.id,"Отлично!\n\n💰Ориентировочная стоимость перевозки:\n"
                                  f"<u>{price:.0f}</u>", reply_markup=for_restart.get_keyboard())
+            await state.clear()
             await asyncio.sleep(3)
             await bot.send_message(chat_id=new_msg.chat.id, text="👩🏼‍💼 Хотите связаться с менеджером для уточнения деталей?", reply_markup=for_manager.get_keyboard())
+
         else:
             await message.answer("🙁 Вы указали веса в неправильном формате.\nПопробуйте ещё раз.", reply_markup=for_restart.get_keyboard())
             await state.set_state(Form.weight)

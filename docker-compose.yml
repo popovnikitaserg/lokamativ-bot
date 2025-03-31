@@ -6,19 +6,19 @@ services:
     command:
       - "postgres"
       - "-c"
-      - "max_connections=50"
+      - "max_connections=5"
       - "-c"
-      - "shared_buffers=1GB"
+      - "shared_buffers=256MB"
       - "-c"
-      - "effective_cache_size=4GB"
+      - "effective_cache_size=128MB"
       - "-c"
       - "work_mem=32MB"
       - "-c"
-      - "maintenance_work_mem=512MB"
+      - "maintenance_work_mem=64MB"
       - "-c"
       - "random_page_cost=1.1"
       - "-c"
-      - "temp_file_limit=15GB"
+      - "temp_file_limit=1GB"
       - "-c"
       - "log_min_duration_statement=200ms"
       - "-c"
@@ -55,33 +55,21 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 4G
+          memory: 300M
     networks:
       - postgres
-
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4:7.2
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "habrpguser@habr.com"
-      PGADMIN_DEFAULT_PASSWORD: "pgadminpwd4habr"
-      PGADMIN_CONFIG_SERVER_MODE: "False"
+  bot:
+    build:
+      context: .
+    env_file:
+      - .env
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    ports:
-      - "5050:80"
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1G
-    networks:
+      - ./app:/app
+    depends_on:
       - postgres
 
 volumes:
   lokamativ-bot-data:
-  pgadmin-data:
 
 networks:
   postgres:
