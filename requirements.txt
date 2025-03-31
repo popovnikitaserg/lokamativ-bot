@@ -4,3 +4,12 @@ APScheduler==3.11.0
 python-decouple==3.8
 regex==2024.11.6
 logging==0.4.9.6
+sqlalchemy==2.0.40
+pandas==2.2.3
+datetime==5.5
+pillow==11.1.0
+selenium==4.30.0
+polars==1.26.0
+great_tables==0.17.0
+openpyxl==3.1.5
+psycopg2-binary==2.9.10
