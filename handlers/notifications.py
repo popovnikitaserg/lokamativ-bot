@@ -11,7 +11,7 @@ from aiogram.types import Message, InlineKeyboardButton
 from aiogram import types
 from selenium.webdriver.common.devtools.v132.console import clear_messages
 
-from create_bot import managers_id
+from create_bot import managers_id, admins
 from db_handlers import db_func
 from keyboards import for_options, for_edit_options
 from utils import role_check
@@ -95,11 +95,35 @@ async def save_order(message: Message, state: FSMContext, bot: Bot):
     result = await db_func.insert_order(order_data)
     if result:
         await message.answer(f"Заявка с номером {prefix}-{order_data["order_id"]} успешно сохранена! Выберите следующее действие:", reply_markup=for_options.get_keyboard(role))
-        await state.clear()
         for id in managers_id:
-            messg = await bot.send_message(chat_id=id, text=f"{prefix}-{order_data["order_id"]} занята.")
-            await bot.unpin_chat_message(chat_id=messg.chat.id)
-            await bot.pin_chat_message(chat_id=messg.chat.id, message_id=messg.message_id)
+            print(id)
+            try:
+                messg = await bot.send_message(chat_id=id, text=f"{prefix}-{order_data["order_id"]} занята.")
+            except:
+                pass
+            try:
+                await bot.unpin_chat_message(chat_id=messg.chat.id)
+            except:
+                pass
+            try:
+                await bot.pin_chat_message(chat_id=messg.chat.id, message_id=messg.message_id)
+            except:
+                pass
+        for id in admins:
+            print(id)
+            try:
+                messg = await bot.send_message(chat_id=id, text=f"{prefix}-{order_data["order_id"]} занята.")
+            except:
+                pass
+            try:
+                await bot.unpin_chat_message(chat_id=messg.chat.id)
+            except:
+                pass
+            try:
+                await bot.pin_chat_message(chat_id=messg.chat.id, message_id=messg.message_id)
+            except:
+                pass
+        await state.clear()
 
     else:
         await message.answer(f"Заявка с номером {prefix}-{order_data["order_id"]} занята. Выберите другую.")

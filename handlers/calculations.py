@@ -60,11 +60,11 @@ async def callbacks_num(callback: types.CallbackQuery, state: FSMContext, bot: B
                                reply_markup=for_restart.get_keyboard())
         await state.set_state(Form.dimensions)
 
-@capture_router.message(lambda message: message.text.isalpha(), Form.quantity)
+@capture_router.message(Form.quantity, lambda message: (message.text.isalpha() and message.text != None))
 async def wrong_format(message: Message, state: FSMContext, bot: Bot):
     await message.answer("❌ Вы неправильно указали количество грузовых мест.\nПопробуйте ещё раз!", reply_markup=for_restart.get_keyboard())
 
-@capture_router.message(lambda message: message.text.isdigit(), Form.quantity)
+@capture_router.message(Form.quantity, lambda message: message.text.isdigit())
 async def start_calculation(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(quantity=int(message.text))
     await message.answer(f"🎲 ✅ Вы выбрали количество мест: <b>{message.text}</b>")

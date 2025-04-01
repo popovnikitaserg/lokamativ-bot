@@ -1,5 +1,5 @@
 import asyncio
-from create_bot import bot, dp
+from create_bot import bot, dp, managers_id, admins
 from handlers import start, calculations, notifications
 from apscheduler.triggers.interval import IntervalTrigger
 from utils import send_notifications
